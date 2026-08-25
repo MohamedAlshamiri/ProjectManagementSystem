@@ -1,0 +1,29 @@
+<nz-header class="header">
+  <div class="logo-section">
+    <div class="logo-mark"><nz-icon nzType="project"></nz-icon></div>
+    <div class="logo-copy">
+      <span class="system-name">{{ 'APP.TITLE' | translate }}</span>
+      <span class="system-caption">{{ 'APP.SUBTITLE' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="header-actions">
+    <button nz-button nzType="text" class="language-button" nz-dropdown [nzDropdownMenu]="languageMenu">
+      <nz-icon nzType="global"></nz-icon>
+      {{ (languageService.language === 'ar' ? 'HEADER.ARABIC' : 'HEADER.ENGLISH') | translate }}
+      <nz-icon nzType="down"></nz-icon>
+    </button>
+    <nz-dropdown-menu #languageMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="changeLanguage('en')"><nz-icon nzType="global"></nz-icon> {{ 'HEADER.ENGLISH' | translate }}</li>
+        <li nz-menu-item (click)="changeLanguage('ar')"><nz-icon nzType="global"></nz-icon> {{ 'HEADER.ARABIC' | translate }}</li>
+      </ul>
+    </nz-dropdown-menu>
+
+    <button nz-button nzType="text" class="profile-button">
+      <nz-icon nzType="user"></nz-icon>
+      <span>{{ 'HEADER.ADMIN' | translate }}</span>
+      <nz-icon nzType="down"></nz-icon>
+    </button>
+  </div>
+</nz-header>

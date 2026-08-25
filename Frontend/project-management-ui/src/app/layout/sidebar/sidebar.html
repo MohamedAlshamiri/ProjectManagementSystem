@@ -1,0 +1,24 @@
+<nz-sider nzCollapsible nzTheme="dark" nzBreakpoint="sm" [nzCollapsedWidth]="0" class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><nz-icon nzType="project"></nz-icon></div>
+    <div class="brand-info">
+      <span class="brand-title">PMS</span>
+      <span class="brand-subtitle">{{ 'APP.SUBTITLE' | translate }}</span>
+    </div>
+  </div>
+
+  <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
+    <li nz-menu-item routerLink="/dashboard" routerLinkActive="ant-menu-item-selected">
+      <nz-icon nzType="dashboard"></nz-icon><span>{{ 'MENU.DASHBOARD' | translate }}</span>
+    </li>
+    <li nz-menu-item routerLink="/projects" routerLinkActive="ant-menu-item-selected">
+      <nz-icon nzType="folder-open"></nz-icon><span>{{ 'MENU.PROJECTS' | translate }}</span>
+    </li>
+    <li nz-menu-item routerLink="/tasks" routerLinkActive="ant-menu-item-selected">
+      <nz-icon nzType="check-circle"></nz-icon><span>{{ 'MENU.TASKS' | translate }}</span>
+    </li>
+    <li nz-menu-item routerLink="/settings" routerLinkActive="ant-menu-item-selected">
+      <nz-icon nzType="setting"></nz-icon><span>{{ 'MENU.SETTINGS' | translate }}</span>
+    </li>
+  </ul>
+</nz-sider>

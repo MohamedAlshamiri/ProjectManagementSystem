@@ -1,0 +1,58 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow"><nz-icon nzType="check-circle"></nz-icon> {{ 'TASKS.EYEBROW' | translate }}</span>
+      <h1>{{ 'TASKS.TITLE' | translate }}</h1>
+      <p>{{ 'TASKS.DESCRIPTION' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button nz-button nzType="default" class="refresh-action" (click)="load(); loadProjects()" [disabled]="loading()"><nz-icon nzType="reload"></nz-icon>{{ 'COMMON.REFRESH' | translate }}</button>
+      <button nz-button nzType="primary" class="primary-action" (click)="openCreate()" [disabled]="!projects().length"><nz-icon nzType="plus"></nz-icon>{{ 'TASKS.ADD' | translate }}</button>
+    </div>
+  </div>
+
+  <div class="filters-card">
+    <div class="filter-field search-field"><label>{{ 'COMMON.SEARCH' | translate }}</label><div class="search-box"><nz-icon nzType="search"></nz-icon><input nz-input [(ngModel)]="search" [placeholder]="'TASKS.SEARCH' | translate" (keyup.enter)="applyFilters()" /></div></div>
+    <div class="filter-field"><label>{{ 'TASKS.PROJECT' | translate }}</label><nz-select [(ngModel)]="projectFilter" [nzAllowClear]="true" [nzPlaceHolder]="'TASKS.FILTER_PROJECT' | translate">@for (project of projects(); track project.id) {<nz-option [nzValue]="project.id" [nzLabel]="project.name"></nz-option>}</nz-select></div>
+    <div class="filter-field"><label>{{ 'TASKS.STATUS' | translate }}</label><nz-select [(ngModel)]="statusFilter" [nzAllowClear]="true" [nzPlaceHolder]="'TASKS.FILTER_STATUS' | translate">@for (status of statuses; track status.id) {<nz-option [nzValue]="status.id" [nzLabel]="languageService.language === 'ar' ? status.nameAr : status.name"></nz-option>}</nz-select></div>
+    <div class="filter-field"><label>{{ 'TASKS.SORT_BY' | translate }}</label><nz-select [(ngModel)]="sortBy"><nz-option nzValue="duedate" [nzLabel]="'TASKS.DUE_DATE' | translate"></nz-option><nz-option nzValue="priority" [nzLabel]="'TASKS.PRIORITY' | translate"></nz-option><nz-option nzValue="title" [nzLabel]="'TASKS.TITLE_FIELD' | translate"></nz-option></nz-select></div>
+    <div class="filter-field"><label>{{ 'TASKS.ORDER' | translate }}</label><nz-select [(ngModel)]="sortOrder"><nz-option nzValue="asc" [nzLabel]="'TASKS.ASCENDING' | translate"></nz-option><nz-option nzValue="desc" [nzLabel]="'TASKS.DESCENDING' | translate"></nz-option></nz-select></div>
+    <div class="filter-actions"><button nz-button nzType="primary" (click)="applyFilters()"><nz-icon nzType="search"></nz-icon>{{ 'COMMON.SEARCH' | translate }}</button><button nz-button nzType="text" (click)="clearFilters()">{{ 'COMMON.CLEAR' | translate }}</button></div>
+  </div>
+
+  @if (error()) { <div class="inline-alert"><nz-icon nzType="warning"></nz-icon><span>{{ 'COMMON.API_ERROR' | translate }}</span><button nz-button nzType="link" (click)="load()">{{ 'COMMON.RETRY' | translate }}</button></div> }
+
+  @if (!projects().length && !loading()) { <div class="info-alert"><nz-icon nzType="info-circle"></nz-icon><span>{{ 'TASKS.CREATE_PROJECT_FIRST' | translate }}</span><a routerLink="/projects">{{ 'TASKS.GO_TO_PROJECTS' | translate }}</a></div> }
+
+  <div class="table-card">
+    <nz-table #taskTable [nzData]="tasks()" [nzLoading]="loading()" [nzFrontPagination]="false" [nzScroll]="{ x: '980px' }">
+      <thead><tr><th>{{ 'TASKS.TITLE_FIELD' | translate }}</th><th>{{ 'TASKS.PROJECT' | translate }}</th><th>{{ 'TASKS.STATUS' | translate }}</th><th>{{ 'TASKS.PRIORITY' | translate }}</th><th>{{ 'TASKS.DUE_DATE' | translate }}</th><th nzAlign="center">{{ 'COMMON.ACTIONS' | translate }}</th></tr></thead>
+      <tbody>
+        @for (task of taskTable.data; track task.id) {
+          <tr>
+            <td><div class="entity-cell"><div class="entity-icon"><nz-icon nzType="check-square"></nz-icon></div><div><strong>{{ task.title }}</strong><div class="description">{{ task.description || ('COMMON.NO_DESCRIPTION' | translate) }}</div></div></div></td>
+            <td><span class="project-name"><nz-icon nzType="folder"></nz-icon>{{ task.projectName }}</span></td>
+            <td><nz-tag [nzColor]="statusColor(task.statusId)">{{ statusLabel(task.statusId) }}</nz-tag></td>
+            <td><nz-tag [nzColor]="priorityColor(task.priorityId)">{{ priorityLabel(task.priorityId) }}</nz-tag></td>
+            <td><span [class.overdue-date]="isOverdue(task)">{{ task.dueDate ? (task.dueDate | date:'mediumDate') : '—' }}</span></td>
+            <td nzAlign="center" class="actions"><button nz-button nzType="text" (click)="openEdit(task)" nz-tooltip [nzTooltipTitle]="'COMMON.EDIT' | translate"><nz-icon nzType="edit"></nz-icon></button><button nz-button nzType="text" nzDanger nz-popconfirm [nzPopconfirmTitle]="'COMMON.DELETE_CONFIRM' | translate" (nzOnConfirm)="delete(task.id)" nz-tooltip [nzTooltipTitle]="'COMMON.DELETE' | translate"><nz-icon nzType="delete"></nz-icon></button></td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+    @if (!loading() && !tasks().length) { <div class="empty-state"><div class="empty-icon"><nz-icon nzType="check-circle"></nz-icon></div><h3>{{ 'TASKS.EMPTY_TITLE' | translate }}</h3><p>{{ 'TASKS.EMPTY_DESCRIPTION' | translate }}</p></div> }
+  </div>
+  @if (total > 0) { <div class="pagination"><span>{{ total }} {{ 'TASKS.RESULTS' | translate }}</span><nz-pagination [nzPageIndex]="pageNumber" [nzPageSize]="pageSize" [nzTotal]="total" (nzPageIndexChange)="changePage($event)"></nz-pagination></div> }
+</section>
+
+<nz-modal [(nzVisible)]="modalVisible" [nzWidth]="680" [nzTitle]="(editingId === null ? 'TASKS.ADD' : 'TASKS.EDIT') | translate" (nzOnCancel)="modalVisible = false" (nzOnOk)="save()" [nzOkLoading]="saving()" [nzOkText]="'COMMON.SAVE' | translate" [nzCancelText]="'COMMON.CANCEL' | translate">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="form" class="task-form">
+      <nz-form-item><nz-form-label nzRequired>{{ 'TASKS.PROJECT' | translate }}</nz-form-label><nz-form-control><nz-select formControlName="projectId" class="full-width">@for (project of projects(); track project.id) {<nz-option [nzValue]="project.id" [nzLabel]="project.name"></nz-option>}</nz-select></nz-form-control></nz-form-item>
+      <nz-form-item><nz-form-label nzRequired>{{ 'TASKS.TITLE_FIELD' | translate }}</nz-form-label><nz-form-control [nzErrorTip]="'TASKS.TITLE_REQUIRED' | translate"><input nz-input formControlName="title" [placeholder]="'TASKS.TITLE_PLACEHOLDER' | translate" /></nz-form-control></nz-form-item>
+      <nz-form-item><nz-form-label>{{ 'TASKS.DESCRIPTION_FIELD' | translate }}</nz-form-label><nz-form-control><textarea nz-input rows="4" formControlName="description" [placeholder]="'TASKS.DESCRIPTION_PLACEHOLDER' | translate"></textarea></nz-form-control></nz-form-item>
+      <div class="date-row"><nz-form-item><nz-form-label nzRequired>{{ 'TASKS.STATUS' | translate }}</nz-form-label><nz-form-control><nz-select formControlName="statusId" class="full-width">@for (status of statuses; track status.id) {<nz-option [nzValue]="status.id" [nzLabel]="languageService.language === 'ar' ? status.nameAr : status.name"></nz-option>}</nz-select></nz-form-control></nz-form-item><nz-form-item><nz-form-label nzRequired>{{ 'TASKS.PRIORITY' | translate }}</nz-form-label><nz-form-control><nz-select formControlName="priorityId" class="full-width">@for (priority of priorities; track priority.id) {<nz-option [nzValue]="priority.id" [nzLabel]="languageService.language === 'ar' ? priority.nameAr : priority.name"></nz-option>}</nz-select></nz-form-control></nz-form-item></div>
+      <nz-form-item><nz-form-label>{{ 'TASKS.DUE_DATE' | translate }}</nz-form-label><nz-form-control><nz-date-picker formControlName="dueDate" class="full-width"></nz-date-picker></nz-form-control></nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

@@ -1,0 +1,5 @@
+.footer { height:56px; background:#fff; border-top:1px solid var(--border); display:flex; align-items:center; padding:0 30px; }
+.footer-content { width:100%; display:flex; justify-content:space-between; align-items:center; gap:12px; color:#8a95a8; font-size:11px; }
+.copyright,.technology { display:flex; align-items:center; gap:7px; }
+.technology strong { color:var(--primary); }
+@media(max-width:600px){ .footer { padding:0 14px; } .technology { display:none; } }

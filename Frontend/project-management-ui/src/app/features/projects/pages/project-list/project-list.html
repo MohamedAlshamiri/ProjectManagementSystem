@@ -1,0 +1,87 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow"><nz-icon nzType="folder-open"></nz-icon> {{ 'PROJECTS.EYEBROW' | translate }}</span>
+      <h1>{{ 'PROJECTS.TITLE' | translate }}</h1>
+      <p>{{ 'PROJECTS.DESCRIPTION' | translate }}</p>
+    </div>
+    <div class="header-actions">
+      <button nz-button nzType="default" class="refresh-action" (click)="load()" [disabled]="loading()">
+        <nz-icon nzType="reload"></nz-icon>{{ 'COMMON.REFRESH' | translate }}
+      </button>
+      <button nz-button nzType="primary" class="primary-action" (click)="openCreate()">
+        <nz-icon nzType="plus"></nz-icon>{{ 'PROJECTS.ADD' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="summary-strip">
+    <div><span>{{ 'PROJECTS.RESULTS' | translate }}</span><strong>{{ projects().length }}</strong></div>
+    <div><span>{{ 'PROJECTS.STATUS' | translate }}</span><strong>{{ activeCount }}</strong></div>
+    <div><span>{{ 'PROJECTS.COMPLETED' | translate }}</span><strong>{{ completedCount }}</strong></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <nz-icon nzType="search"></nz-icon>
+      <input nz-input [(ngModel)]="search" [placeholder]="'PROJECTS.SEARCH' | translate" />
+    </div>
+    <nz-select class="status-filter" [(ngModel)]="statusFilter" [nzAllowClear]="true" [nzPlaceHolder]="'PROJECTS.FILTER_STATUS' | translate">
+      @for (status of statuses; track status.id) {
+        <nz-option [nzValue]="status.id" [nzLabel]="languageService.language === 'ar' ? status.nameAr : status.name"></nz-option>
+      }
+    </nz-select>
+    <span class="result-count">{{ filteredProjects.length }} {{ 'PROJECTS.RESULTS' | translate }}</span>
+  </div>
+
+  @if (error()) {
+    <div class="inline-alert"><nz-icon nzType="warning"></nz-icon><span>{{ 'COMMON.API_ERROR' | translate }}</span><button nz-button nzType="link" (click)="load()">{{ 'COMMON.RETRY' | translate }}</button></div>
+  }
+
+  <div class="table-card">
+    <nz-table #projectTable [nzData]="filteredProjects" [nzLoading]="loading()" [nzFrontPagination]="true" [nzPageSize]="8" [nzScroll]="{ x: '850px' }">
+      <thead>
+        <tr>
+          <th>{{ 'PROJECTS.NAME' | translate }}</th>
+          <th>{{ 'PROJECTS.STATUS' | translate }}</th>
+          <th>{{ 'PROJECTS.START' | translate }}</th>
+          <th>{{ 'PROJECTS.END' | translate }}</th>
+          <th>{{ 'PROJECTS.TASKS' | translate }}</th>
+          <th nzAlign="center">{{ 'COMMON.ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (project of projectTable.data; track project.id) {
+          <tr>
+            <td>
+              <div class="entity-cell"><div class="entity-icon"><nz-icon nzType="folder"></nz-icon></div><div><strong>{{ project.name }}</strong><div class="description">{{ project.description || ('COMMON.NO_DESCRIPTION' | translate) }}</div></div></div>
+            </td>
+            <td><nz-tag [nzColor]="statusColor(project.statusId)">{{ statusLabel(project.statusId) }}</nz-tag></td>
+            <td>{{ project.startDate ? (project.startDate | date:'mediumDate') : '—' }}</td>
+            <td>{{ project.endDate ? (project.endDate | date:'mediumDate') : '—' }}</td>
+            <td><span class="task-count"><nz-icon nzType="check-square"></nz-icon>{{ project.tasksCount }}</span></td>
+            <td nzAlign="center" class="actions">
+              <button nz-button nzType="text" (click)="openEdit(project)" nz-tooltip [nzTooltipTitle]="'COMMON.EDIT' | translate"><nz-icon nzType="edit"></nz-icon></button>
+              <button nz-button nzType="text" nzDanger nz-popconfirm [nzPopconfirmTitle]="'COMMON.DELETE_CONFIRM' | translate" (nzOnConfirm)="delete(project.id)" nz-tooltip [nzTooltipTitle]="'COMMON.DELETE' | translate"><nz-icon nzType="delete"></nz-icon></button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+
+    @if (!loading() && !filteredProjects.length) {
+      <div class="empty-state"><div class="empty-icon"><nz-icon nzType="folder-open"></nz-icon></div><h3>{{ 'PROJECTS.EMPTY_TITLE' | translate }}</h3><p>{{ search || statusFilter ? ('PROJECTS.EMPTY_FILTER' | translate) : ('PROJECTS.EMPTY_DESCRIPTION' | translate) }}</p>@if (!search && statusFilter === null) {<button nz-button nzType="primary" (click)="openCreate()">{{ 'PROJECTS.ADD' | translate }}</button>}</div>
+    }
+  </div>
+</section>
+
+<nz-modal [(nzVisible)]="modalVisible" [nzWidth]="640" [nzTitle]="(editingId === null ? 'PROJECTS.ADD' : 'PROJECTS.EDIT') | translate" (nzOnCancel)="modalVisible = false" (nzOnOk)="save()" [nzOkLoading]="saving()" [nzOkText]="'COMMON.SAVE' | translate" [nzCancelText]="'COMMON.CANCEL' | translate">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="form" class="project-form">
+      <nz-form-item><nz-form-label nzRequired>{{ 'PROJECTS.NAME' | translate }}</nz-form-label><nz-form-control [nzErrorTip]="'PROJECTS.NAME_REQUIRED' | translate"><input nz-input formControlName="name" [placeholder]="'PROJECTS.NAME_PLACEHOLDER' | translate" /></nz-form-control></nz-form-item>
+      <nz-form-item><nz-form-label>{{ 'PROJECTS.DESCRIPTION_FIELD' | translate }}</nz-form-label><nz-form-control><textarea nz-input rows="4" formControlName="description" [placeholder]="'PROJECTS.DESCRIPTION_PLACEHOLDER' | translate"></textarea></nz-form-control></nz-form-item>
+      <nz-form-item><nz-form-label nzRequired>{{ 'PROJECTS.STATUS' | translate }}</nz-form-label><nz-form-control><nz-select formControlName="statusId" class="full-width">@for (status of statuses; track status.id) {<nz-option [nzValue]="status.id" [nzLabel]="languageService.language === 'ar' ? status.nameAr : status.name"></nz-option>}</nz-select></nz-form-control></nz-form-item>
+      <div class="date-row"><nz-form-item><nz-form-label>{{ 'PROJECTS.START' | translate }}</nz-form-label><nz-form-control><nz-date-picker formControlName="startDate" class="full-width"></nz-date-picker></nz-form-control></nz-form-item><nz-form-item><nz-form-label>{{ 'PROJECTS.END' | translate }}</nz-form-label><nz-form-control><nz-date-picker formControlName="endDate" class="full-width"></nz-date-picker></nz-form-control></nz-form-item></div>
+    </form>
+  </ng-container>
+</nz-modal>

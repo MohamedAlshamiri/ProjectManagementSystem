@@ -1,0 +1,33 @@
+<section class="settings-page">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow"><nz-icon nzType="setting"></nz-icon> {{ 'SETTINGS.EYEBROW' | translate }}</span>
+      <h1>{{ 'SETTINGS.TITLE' | translate }}</h1>
+      <p>{{ 'SETTINGS.DESCRIPTION' | translate }}</p>
+    </div>
+  </div>
+
+  <nz-card class="settings-card">
+    <div class="setting-row">
+      <div class="setting-icon"><nz-icon nzType="global"></nz-icon></div>
+      <div class="setting-copy">
+        <h3>{{ 'SETTINGS.LANGUAGE_TITLE' | translate }}</h3>
+        <p>{{ 'SETTINGS.LANGUAGE_DESCRIPTION' | translate }}</p>
+      </div>
+      <nz-radio-group [ngModel]="languageService.language" (ngModelChange)="changeLanguage($event)">
+        <label nz-radio-button nzValue="en">English</label>
+        <label nz-radio-button nzValue="ar">العربية</label>
+      </nz-radio-group>
+    </div>
+  </nz-card>
+
+  <nz-card class="settings-card info-card">
+    <div class="setting-row">
+      <div class="setting-icon blue"><nz-icon nzType="info-circle"></nz-icon></div>
+      <div class="setting-copy">
+        <h3>{{ 'SETTINGS.SYSTEM_TITLE' | translate }}</h3>
+        <p>{{ 'SETTINGS.SYSTEM_DESCRIPTION' | translate }}</p>
+      </div>
+    </div>
+  </nz-card>
+</section>

@@ -1,0 +1,69 @@
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# =========================
+# Visual Studio / .NET
+# =========================
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test / coverage output
+**/TestResults/
+**/coverage/
+
+# ASP.NET local secrets / generated files
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+**/secrets.json
+
+# =========================
+# Node / Angular
+# =========================
+**/node_modules/
+**/dist/
+**/.angular/
+**/out-tsc/
+**/tmp/
+**/bazel-out/
+**/.cache/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# =========================
+# Environment files
+# Keep example files tracked; ignore real local env files.
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Build / publish artifacts
+# =========================
+**/publish/
+**/*.publishsettings
+**/*.pfx
+**/*.p12
+
+# =========================
+# Logs
+# =========================
+*.log

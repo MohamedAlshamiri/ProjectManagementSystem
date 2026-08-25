@@ -1,0 +1,73 @@
+<section class="dashboard">
+  <div class="welcome-card">
+    <div>
+      <span class="eyebrow"><nz-icon nzType="dashboard"></nz-icon> {{ 'DASHBOARD.OVERVIEW' | translate }}</span>
+      <h1>{{ 'DASHBOARD.WELCOME' | translate }}</h1>
+      <p>{{ 'DASHBOARD.DESCRIPTION' | translate }}</p>
+      <div class="quick-actions">
+        <a nz-button nzType="primary" routerLink="/projects"><nz-icon nzType="folder-add"></nz-icon>{{ 'DASHBOARD.MANAGE_PROJECTS' | translate }}</a>
+        <a nz-button routerLink="/tasks"><nz-icon nzType="check-square"></nz-icon>{{ 'DASHBOARD.MANAGE_TASKS' | translate }}</a>
+      </div>
+    </div>
+    <div class="welcome-art"><nz-icon nzType="bar-chart"></nz-icon></div>
+  </div>
+
+  @if (apiError()) {
+    <div class="api-alert"><nz-icon nzType="warning"></nz-icon><div class="api-alert-copy"><strong>{{ 'COMMON.API_ERROR_TITLE' | translate }}</strong><span>{{ 'COMMON.API_ERROR' | translate }}</span></div><button nz-button nzType="link" (click)="load()">{{ 'COMMON.RETRY' | translate }}</button></div>
+  }
+
+  <nz-spin [nzSpinning]="loading()">
+    <div class="stats-grid">
+      <nz-card class="stat-card projects-stat">
+        <div class="stat-icon"><nz-icon nzType="folder-open"></nz-icon></div>
+        <nz-statistic [nzTitle]="'DASHBOARD.PROJECTS' | translate" [nzValue]="projects()"></nz-statistic>
+      </nz-card>
+      <nz-card class="stat-card tasks-stat">
+        <div class="stat-icon"><nz-icon nzType="check-circle"></nz-icon></div>
+        <nz-statistic [nzTitle]="'DASHBOARD.TASKS' | translate" [nzValue]="tasks()"></nz-statistic>
+      </nz-card>
+      <nz-card class="stat-card completed-stat">
+        <div class="stat-icon"><nz-icon nzType="trophy"></nz-icon></div>
+        <nz-statistic [nzTitle]="'DASHBOARD.COMPLETED_PROJECTS' | translate" [nzValue]="completedProjects()"></nz-statistic>
+      </nz-card>
+      <nz-card class="stat-card done-stat">
+        <div class="stat-icon"><nz-icon nzType="check"></nz-icon></div>
+        <nz-statistic [nzTitle]="'DASHBOARD.COMPLETED_TASKS' | translate" [nzValue]="completedTasks()"></nz-statistic>
+      </nz-card>
+    </div>
+  </nz-spin>
+
+  <div class="dashboard-grid">
+    <nz-card class="panel-card"><div class="panel-heading"><div><span class="panel-kicker">{{ 'DASHBOARD.RECENT_PROJECTS' | translate }}</span><h2>{{ 'DASHBOARD.PROJECTS' | translate }}</h2></div><a nz-button nzType="link" routerLink="/projects">{{ 'DASHBOARD.VIEW_ALL' | translate }}</a></div>
+      @if (projectList().length) {
+        <div class="project-list">
+          @for (project of projectList(); track project.id) {
+            <a class="project-row" routerLink="/projects">
+              <div class="item-icon"><nz-icon nzType="folder"></nz-icon></div>
+              <div class="item-main"><strong>{{ project.name }}</strong><span>{{ project.tasksCount }} {{ 'DASHBOARD.TASKS_SHORT' | translate }}</span></div>
+              <nz-tag [nzColor]="statusColor(project.statusId)">{{ projectStatusLabel(project.statusId) }}</nz-tag>
+            </a>
+          }
+        </div>
+      } @else {
+        <div class="empty-state"><nz-icon nzType="folder-open"></nz-icon><span>{{ 'DASHBOARD.NO_PROJECTS' | translate }}</span></div>
+      }
+    </nz-card>
+
+    <nz-card class="panel-card"><div class="panel-heading"><div><span class="panel-kicker">{{ 'DASHBOARD.UPCOMING_TASKS' | translate }}</span><h2>{{ 'DASHBOARD.TASKS' | translate }}</h2></div><a nz-button nzType="link" routerLink="/tasks">{{ 'DASHBOARD.VIEW_ALL' | translate }}</a></div>
+      @if (recentTasks().length) {
+        <div class="task-list">
+          @for (task of recentTasks(); track task.id) {
+            <div class="task-row">
+              <div class="item-icon task-icon"><nz-icon nzType="check-circle"></nz-icon></div>
+              <div class="item-main"><strong>{{ task.title }}</strong><span>{{ task.projectName }}</span></div>
+              <nz-tag [nzColor]="statusColor(task.statusId)">{{ taskStatusLabel(task.statusId) }}</nz-tag>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state"><nz-icon nzType="check-circle"></nz-icon><span>{{ 'DASHBOARD.NO_TASKS' | translate }}</span></div>
+      }
+    </nz-card>
+  </div>
+</section>

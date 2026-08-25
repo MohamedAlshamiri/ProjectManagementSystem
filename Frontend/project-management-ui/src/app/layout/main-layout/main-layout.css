@@ -1,0 +1,14 @@
+.app-layout { min-height: 100vh; width: 100%; max-width: 100%; overflow-x: hidden; background: #f3f6fb; }
+.main-shell { min-height: calc(100vh - 132px); min-width: 0; width: 100%; }
+.content-area {
+  padding: 30px;
+  min-width: 0;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 100% 0, rgba(22,119,255,.075), transparent 28%),
+    radial-gradient(circle at 0 100%, rgba(114,46,209,.035), transparent 24%),
+    #f3f6fb;
+  min-height: calc(100vh - 132px);
+}
+@media (max-width: 900px) { .content-area { padding: 20px; } }
+@media (max-width: 600px) { .content-area { padding: 14px; } }
