@@ -1,7 +1,6 @@
 {
   "APP": {
-    "TITLE": "Project Management System",
-    "SUBTITLE": "Plan • Track • Deliver"
+    "TITLE": "Project Management System"
   },
   "MENU": {
     "DASHBOARD": "Dashboard",
@@ -19,7 +18,7 @@
   },
   "FOOTER": {
     "COPYRIGHT": "2026 Project Management System",
-    "BUILT_WITH": "Built with Angular and ASP.NET Core"
+    "BUILT_WITH": "Designed and developed by Mohammed Alshamiri"
   },
   "COMMON": {
     "ACTIONS": "Actions",
@@ -39,8 +38,7 @@
     "REFRESH": "Refresh"
   },
   "DASHBOARD": {
-    "OVERVIEW": "Workspace overview",
-    "WELCOME": "Welcome to your dashboard",
+    "WELCOME": "dashboard",
     "DESCRIPTION": "A clear view of your projects, tasks and progress.",
     "MANAGE_PROJECTS": "Manage projects",
     "MANAGE_TASKS": "Manage tasks",

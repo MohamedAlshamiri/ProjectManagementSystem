@@ -1,16 +1,22 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { routes } from './app.routes';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import ar from '@angular/common/locales/ar';
 import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
-import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 registerLocaleData(en);
 registerLocaleData(ar);
+
+const initialLanguage = (): 'en' | 'ar' => {
+  const saved = localStorage.getItem('pms-language');
+  return saved === 'ar' ? 'ar' : 'en';
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,18 +24,19 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
 
-    // ngx-translate v18: use the official HTTP-loader provider helper.
-    // The old manual TRANSLATE_HTTP_LOADER_CONFIG + TranslateHttpLoader
-    // combination can leave the application displaying raw translation keys
-    // when the loader configuration is not wired correctly.
     provideTranslateService({
       loader: provideTranslateHttpLoader({
-        prefix: '/assets/i18n/',
+        prefix: './assets/i18n/',
         suffix: '.json',
-        failOnError: true
+        enforceLoading: true
       }),
-      fallbackLang: 'en',
-      lang: 'en'
+      fallbackLang: 'en'
+    }),
+
+    provideAppInitializer(() => {
+      const translate = inject(TranslateService);
+      const language = initialLanguage();
+      return firstValueFrom(translate.use(language));
     }),
 
     provideNzI18n(en_US)

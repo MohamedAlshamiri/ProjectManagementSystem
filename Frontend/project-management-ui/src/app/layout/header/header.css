@@ -1,36 +1,34 @@
+
 .header {
-  height: 76px;
-  padding: 0 30px;
+  height: 68px;
+  min-height: 68px;
+  padding: 0 26px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255,255,255,.94);
+  gap: 20px;
+  background: rgba(255, 255, 255, .96);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 18px rgba(20,35,60,.035);
+  box-shadow: 0 2px 18px rgba(20, 35, 60, .035);
   position: sticky;
   top: 0;
   z-index: 100;
 }
-.logo-section { display:flex; align-items:center; gap:12px; min-width:0; }
-.logo-mark {
-  width: 44px; height: 44px; border-radius: 13px;
-  display:flex; align-items:center; justify-content:center;
-  color:#fff; background:linear-gradient(135deg,#0958d9,#4096ff 70%,#69b1ff);
-  box-shadow:0 9px 22px rgba(22,119,255,.23);
-}
-.logo-mark nz-icon { font-size:22px; }
-.logo-copy { display:flex; flex-direction:column; min-width:0; }
-.system-name { font-weight:800; color:#15213a; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.system-caption { color:var(--muted); font-size:10px; margin-top:2px; }
-.header-actions { display:flex; align-items:center; gap:5px; }
-.language-button, .profile-button { color:#526078; height:40px; }
-.language-button:hover, .profile-button:hover { color:var(--primary); background:#f5f8fd; }
-.profile-button { border-inline-start:1px solid var(--border); padding-inline-start:16px; margin-inline-start:6px; }
-@media (max-width:600px) {
-  .header { padding:0 14px; }
-  .system-caption { display:none; }
-  .system-name { max-width:175px; }
-  .profile-button span { display:none; }
-  .profile-button { padding-inline-start:10px; }
+.logo-section { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.logo-mark { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(135deg, #0958d9, #4096ff 70%, #69b1ff); box-shadow: 0 9px 22px rgba(22, 119, 255, .23); flex: 0 0 auto; }
+.logo-mark nz-icon { font-size: 21px; }
+.logo-copy { display: flex; flex-direction: column; min-width: 0; }
+.system-name { font-weight: 800; color: #15213a; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.system-caption { color: var(--muted); font-size: 10px; margin-top: 1px; }
+.header-actions { display: flex; align-items: center; gap: 5px; flex: 0 0 auto; }
+.language-button, .profile-button { color: #526078; height: 38px; }
+.language-button:hover, .profile-button:hover { color: var(--primary); background: #f5f8fd; }
+.profile-button { border-inline-start: 1px solid var(--border); padding-inline-start: 15px; margin-inline-start: 6px; }
+@media (max-width: 600px) {
+  .header { padding: 0 12px; gap: 10px; }
+  .system-caption { display: none; }
+  .system-name { max-width: 180px; font-size: 14px; }
+  .profile-button span { display: none; }
+  .profile-button { padding-inline-start: 9px; }
 }
